@@ -85,5 +85,5 @@ const styles = StyleSheet.create({
   imageBox: { width: '100%', height: 180, borderRadius: 12, overflow: 'hidden', marginBottom: 12, backgroundColor: '#eee' },
   noticeImage: { width: '100%', height: '100%' },
   noticeTitle: { color: '#0f562a', fontSize: 18, fontWeight: '800', marginBottom: 6 },
-  noticeDesc: { color: '#333', fontSize: 14, lineHeight: 22 },
+  noticeDesc: { color: '#333', fontSize: 14, lineHeight: 22, textAlign: 'justify' },
 });

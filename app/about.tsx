@@ -160,6 +160,7 @@ const styles = StyleSheet.create({
     color: '#2d2d2d',
     fontSize: 15,
     lineHeight: 24,
+    textAlign: 'justify',
   },
   bottomPadding: {
     height: 80, // Adjust this value to create space for the bottom tab bar

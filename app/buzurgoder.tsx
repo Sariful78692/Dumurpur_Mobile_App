@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   backText: { color: '#fff', fontWeight: '700' },
   header: { marginBottom: 18, backgroundColor: '#0f562a', borderRadius: 18, padding: 18, alignItems: 'center', borderWidth: 1, borderColor: '#f9bf3a' },
   heading: { color: '#f9bf3a', fontSize: 26, fontWeight: '800', textAlign: 'center' },
-  subtitle: { color: '#eaf7ee', marginTop: 5, fontSize: 13 },
+  subtitle: { color: '#eaf7ee', marginTop: 5, fontSize: 13, textAlign: 'center' },
   section: { marginBottom: 14 },
   sectionTitleRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#0f562a', borderRadius: 14, paddingHorizontal: 12, paddingVertical: 10, borderWidth: 1, borderColor: '#f9bf3a' },
   imageBox: { width: 45, height: 45, borderRadius: 22.5, backgroundColor: '#fff', borderWidth: 1.5, borderColor: '#f9bf3a', overflow: 'hidden', justifyContent: 'center', alignItems: 'center', marginRight: 12 },
@@ -232,5 +232,5 @@ const styles = StyleSheet.create({
   chevron: { color: '#f9bf3a', fontSize: 24, fontWeight: '700', marginLeft: 8 },
   quoteCard: { backgroundColor: 'rgba(255,255,255,0.96)', marginTop: 8, borderRadius: 14, padding: 14, borderLeftWidth: 5, borderLeftColor: '#f9bf3a', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.15, elevation: 3 },
   label: { color: '#0f562a', fontSize: 14, fontWeight: '800', marginBottom: 5 },
-  quote: { color: '#303030', fontSize: 15, lineHeight: 24 },
+  quote: { color: '#303030', fontSize: 15, lineHeight: 24, textAlign: 'justify' },
 });

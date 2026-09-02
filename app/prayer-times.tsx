@@ -1,164 +1,19 @@
 import React from 'react';
 import { useRouter } from 'expo-router';
-import {
-  ImageBackground,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import BottomNav from '../components/BottomNav';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const backgroundImage = {
-  uri: 'https://t4.ftcdn.net/jpg/04/24/19/47/360_F_424194700_YLn8PuaiqR36LI84T9E76ATDd6HrU2at.jpg',
-};
+const formatTime = (minutes: number) => { const hour = Math.floor(minutes / 60), minute = minutes % 60; return `${hour % 12 || 12}:${String(minute).padStart(2, '0')} ${hour >= 12 ? 'PM' : 'AM'}`; };
+const getPrayerTimes = () => { const day = new Date().getDate() + new Date().getMonth(); const rise = 325 + day % 10; const set = 1115 + day % 7; return { sunrise: formatTime(rise), sunset: formatTime(set), prayerTimes: [{ name: 'Fajr', time: formatTime(rise - 85), icon: 'weather-sunset-up' as const }, { name: 'Dhuhr', time: formatTime(rise + 355), icon: 'white-balance-sunny' as const }, { name: 'Asr', time: formatTime(set - 215), icon: 'weather-partly-cloudy' as const }, { name: 'Maghrib', time: formatTime(set), icon: 'weather-sunset-down' as const }, { name: 'Isha', time: formatTime(set + 120), icon: 'moon-waning-crescent' as const }] }; };
 
-const formatTime = (minutes: number) => {
-  const hour = Math.floor(minutes / 60);
-  const minute = minutes % 60;
-  const suffix = hour >= 12 ? 'PM' : 'AM';
-  const displayHour = hour % 12 === 0 ? 12 : hour % 12;
-  return `${displayHour}:${String(minute).padStart(2, '0')} ${suffix}`;
-};
+export default function PrayerTimes() { const router = useRouter(); const { sunrise, sunset, prayerTimes } = getPrayerTimes(); return <View style={s.screen}><View style={s.pink} /><View style={s.blue} /><View style={s.greenOrb} /><ScrollView contentContainerStyle={s.container} showsVerticalScrollIndicator={false}>
+  <View style={s.top}><TouchableOpacity onPress={() => router.back()} hitSlop={12}><Text style={s.back}>‹</Text></TouchableOpacity><Text style={s.title}>Prayer Times</Text><View style={{ width: 40 }} /></View>
+  <View style={s.dateCard}><Text style={s.arrow}>‹</Text><View><Text style={s.date}>Wednesday, 02, September</Text><Text style={s.hijri}>19 Rabīʿ al-awwal, 1448</Text></View><Text style={s.arrow}>›</Text></View>
+  <View style={s.card}><View style={s.next}><Text style={s.sunrise}>Sunrise</Text><Text style={s.riseTime}>{sunrise}</Text></View><Text style={s.nextText}>Next prayer starts at 03:35:37</Text><View style={s.line} />{prayerTimes.map(p => <View style={s.row} key={p.name}><MaterialCommunityIcons name={p.icon} size={34} color="#999" /><Text style={s.name}>{p.name}</Text><Text style={s.time}>{p.time}</Text></View>)}</View>
+  <View style={s.smallCard}><View><Text style={s.small}>Sunrise</Text><Text style={s.smallTime}>{sunrise.replace(' AM', '')}</Text></View><View><Text style={s.small}>Sunset</Text><Text style={s.smallTime}>{sunset.replace(' PM', '')}</Text></View></View>
+  <View style={s.adjust}><Text style={s.adjustText}>Hijri Adjustment</Text><View style={s.controls}><Text style={s.button}>−1</Text><Text style={s.zero}>0</Text><Text style={s.button}>+1</Text></View></View>
+  <TouchableOpacity style={s.recalc}><MaterialCommunityIcons name="refresh" size={28} color="#777" /><Text style={s.recalcText}>Recalculate</Text></TouchableOpacity>
+</ScrollView></View>; }
 
-const getPrayerTimes = () => {
-  const today = new Date();
-  const dayValue = today.getDate() + today.getMonth();
-
-  const sunriseMinutes = 5 * 60 + 25 + (dayValue % 10);
-  const sunsetMinutes = 18 * 60 + 35 + (dayValue % 7);
-
-  const fajr = sunriseMinutes - 85;
-  const dhuhr = sunriseMinutes + 355;
-  const asr = sunsetMinutes - 215;
-  const maghrib = sunsetMinutes;
-  const isha = sunsetMinutes + 120;
-
-  return {
-    sunrise: formatTime(sunriseMinutes),
-    sunset: formatTime(sunsetMinutes),
-    prayerTimes: [
-      { name: 'Fajr', time: formatTime(fajr) },
-      { name: 'Dhuhr', time: formatTime(dhuhr) },
-      { name: 'Asr', time: formatTime(asr) },
-      { name: 'Maghrib', time: formatTime(maghrib) },
-      { name: 'Isha', time: formatTime(isha) },
-    ],
-  };
-};
-
-const PrayerTimes = () => {
-  const router = useRouter();
-  const { sunrise, sunset, prayerTimes } = getPrayerTimes();
-
-  return (
-    <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>
-      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-        <View style={styles.topBar}>
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()} activeOpacity={0.8}>
-            <Text style={styles.backButtonText}>← Back</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.headerCard}>
-          <Text style={styles.title}>Prayer Times</Text>
-          <Text style={styles.subtitle}>India • Sunrise & sunset based</Text>
-        </View>
-
-        <View style={styles.infoCard}>
-          <Text style={styles.infoText}>Sunrise: {sunrise}</Text>
-          <Text style={styles.infoText}>Sunset: {sunset}</Text>
-        </View>
-
-        {prayerTimes.map((item) => (
-          <View key={item.name} style={styles.card}>
-            <Text style={styles.prayerName}>{item.name}</Text>
-            <Text style={styles.prayerTime}>{item.time}</Text>
-          </View>
-        ))}
-      </ScrollView>
-      <BottomNav activeTab="home" />
-    </ImageBackground>
-  );
-};
-
-export default PrayerTimes;
-
-const styles = StyleSheet.create({
-  backgroundImage: {
-    flex: 1,
-  },
-  container: {
-    padding: 16,
-    paddingBottom: 90,
-  },
-  topBar: {
-    marginBottom: 12,
-  },
-  backButton: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(15, 86, 42, 0.95)',
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#f9bf3a',
-  },
-  backButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  headerCard: {
-    backgroundColor: 'rgba(15, 86, 42, 0.9)',
-    borderRadius: 18,
-    padding: 18,
-    alignItems: 'center',
-    marginBottom: 14,
-  },
-  title: {
-    color: '#f9bf3a',
-    fontSize: 24,
-    fontWeight: '800',
-  },
-  subtitle: {
-    color: '#edf9ee',
-    fontSize: 13,
-    marginTop: 6,
-  },
-  infoCard: {
-    backgroundColor: 'rgba(255,255,255,0.9)',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 16,
-  },
-  infoText: {
-    color: '#2d2d2d',
-    fontSize: 14,
-    fontWeight: '700',
-    marginBottom: 4,
-  },
-  card: {
-    backgroundColor: 'rgba(255,255,255,0.94)',
-    borderRadius: 16,
-    paddingHorizontal: 18,
-    paddingVertical: 16,
-    marginBottom: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderLeftWidth: 5,
-    borderLeftColor: '#f9bf3a',
-  },
-  prayerName: {
-    color: '#0f562a',
-    fontSize: 18,
-    fontWeight: '800',
-  },
-  prayerTime: {
-    color: '#333',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-});
+const card = { backgroundColor: 'rgba(255,255,255,.84)', borderRadius: 16, elevation: 5, shadowColor: '#777', shadowOpacity: .2, shadowRadius: 10 };
+const s = StyleSheet.create({ screen: { flex: 1, backgroundColor: '#e7f1f5', overflow: 'hidden' }, pink: { position: 'absolute', width: 330, height: 330, borderRadius: 180, backgroundColor: '#f8dbe6', left: -90, bottom: 10 }, blue: { position: 'absolute', width: 360, height: 360, borderRadius: 200, backgroundColor: '#c8e9f4', right: -120, bottom: -40 }, greenOrb: { position: 'absolute', width: 300, height: 300, borderRadius: 160, backgroundColor: '#d9f4d9', right: -100, top: -80 }, container: { padding: 16, paddingTop: 36, paddingBottom: 44 }, top: { height: 76, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }, back: { fontSize: 48, color: '#111' }, title: { color: '#07965c', fontSize: 29, fontWeight: '800' }, dateCard: { ...card, padding: 18, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 42 }, arrow: { fontSize: 46, color: '#16a36b' }, date: { color: '#111', fontSize: 18, fontWeight: '800', textAlign: 'center' }, hijri: { color: '#444', fontSize: 18, fontWeight: '700', textAlign: 'center', marginTop: 10 }, card: { ...card, padding: 22 }, next: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }, sunrise: { color: '#07965c', fontSize: 30, fontWeight: '800' }, riseTime: { color: '#111', fontSize: 29, fontWeight: '800', marginLeft: 10 }, nextText: { color: '#666', fontSize: 16, textAlign: 'center', marginTop: 3 }, line: { height: 1, backgroundColor: '#e4d9eb', marginVertical: 18 }, row: { flexDirection: 'row', alignItems: 'center', height: 55, paddingHorizontal: 2 }, name: { color: '#222', fontSize: 19, marginLeft: 18, flex: 1 }, time: { color: '#111', fontSize: 18, minWidth: 82, textAlign: 'right' }, smallCard: { ...card, padding: 16, marginTop: 40, flexDirection: 'row', justifyContent: 'space-between' }, small: { fontSize: 18, color: '#222' }, smallTime: { fontSize: 19, marginTop: 4 }, adjust: { ...card, padding: 16, marginTop: 40, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }, adjustText: { fontSize: 18 }, controls: { flexDirection: 'row', alignItems: 'center', gap: 18 }, button: { backgroundColor: '#fff', borderRadius: 13, borderWidth: 1, borderColor: '#ddd', padding: 14, color: '#07965c', fontSize: 17, fontWeight: '800' }, zero: { fontSize: 18, fontWeight: '800' }, recalc: { alignSelf: 'center', flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,255,255,.75)', borderRadius: 18, paddingVertical: 16, paddingHorizontal: 28, marginTop: 38 }, recalcText: { fontSize: 17, color: '#444', marginLeft: 12 } });
