@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import BottomNav from '../components/BottomNav';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // AsyncStorage যুক্ত করা হলো
 
 const backgroundImage = { uri: 'https://t4.ftcdn.net/jpg/04/24/19/47/360_F_424194700_YLn8PuaiqR36LI84T9E76ATDd6HrU2at.jpg' };
 
@@ -16,13 +17,23 @@ export default function JiboniScreen() {
   useEffect(() => {
     const fetchJiboni = async () => {
       try {
+        // ১. ক্যাশ থেকে লোড
+        const cachedJiboni = await AsyncStorage.getItem('@jiboniList');
+        if (cachedJiboni) {
+          setJiboniList(JSON.parse(cachedJiboni));
+          setLoading(false);
+        }
+
+        // ২. ফায়ারবেস থেকে নতুন ডেটা আনা
         const querySnapshot = await getDocs(collection(db, "jiboni"));
         const list = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         list.sort((a: any, b: any) => (Number(a.order) || 999) - (Number(b.order) || 999));
+        
         setJiboniList(list);
+        await AsyncStorage.setItem('@jiboniList', JSON.stringify(list));
         setLoading(false);
       } catch (error) {
-        console.log("Error fetching jiboni:", error);
+        console.log("Error or Offline:", error);
         setLoading(false);
       }
     };
@@ -47,24 +58,21 @@ export default function JiboniScreen() {
     <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.background}>
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         
-        {/* ব্যাক বাটন */}
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
 
-        {/* শুধু 'বুজুর্গদের জীবনী' হেডার */}
         <View style={styles.header}>
           <Text style={styles.heading}>বুজুর্গদের জীবনী</Text>
         </View>
 
-        {/* লোডিং অথবা বুক পেজ ভিউ */}
         {loading ? (
           <View style={{ marginTop: 40, alignItems: 'center' }}>
             <ActivityIndicator size="large" color="#f9bf3a" />
             <Text style={{ color: '#fff', marginTop: 10 }}>লোড হচ্ছে...</Text>
           </View>
         ) : jiboniList.length === 0 ? (
-          <Text style={{ textAlign: 'center', color: '#fff', marginTop: 20 }}>কোনো জীবনী পাওয়া যায়নি।</Text>
+          <Text style={{ textAlign: 'center', color: '#fff', marginTop: 20 }}>কোনো জীবনী পাওয়া যায়নি।</Text>
         ) : (
           <View style={styles.bookPage}>
             {currentItem.imageUrl && (
@@ -76,7 +84,6 @@ export default function JiboniScreen() {
             <Text style={styles.bookTitle}>{currentItem.title || currentItem.name}</Text>
             <Text style={styles.bookContent}>{currentItem.description || currentItem.bio}</Text>
 
-            {/* পেজ পরিবর্তন বাটন */}
             <View style={styles.paginationContainer}>
               <TouchableOpacity 
                 style={[styles.pageBtn, currentIndex === 0 && styles.disabledBtn]} 
@@ -112,44 +119,13 @@ const styles = StyleSheet.create({
   container: { padding: 16, paddingBottom: 100 },
   backButton: { alignSelf: 'flex-start', backgroundColor: '#0f562a', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 10, marginBottom: 14, borderWidth: 1, borderColor: '#f9bf3a' },
   backText: { color: '#fff', fontWeight: '700' },
-  
-  // হেডার স্টাইল
-  header: { 
-    marginBottom: 18, 
-    backgroundColor: '#0f562a', 
-    borderRadius: 18, 
-    padding: 14, 
-    alignItems: 'center', 
-    borderWidth: 1, 
-    borderColor: '#f9bf3a' 
-  },
-  heading: { 
-    color: '#f9bf3a', 
-    fontSize: 24, 
-    fontWeight: '800', 
-    textAlign: 'center' 
-  },
-
-  // বইয়ের পাতার ডিজাইন
-  bookPage: { 
-    backgroundColor: '#fffdf9', 
-    borderRadius: 16, 
-    padding: 20, 
-    borderWidth: 1.5, 
-    borderColor: '#d4af37', 
-    shadowColor: '#000', 
-    shadowOffset: { width: 0, height: 4 }, 
-    shadowOpacity: 0.2, 
-    elevation: 5,
-    minHeight: 350,
-    justifyContent: 'space-between'
-  },
+  header: { marginBottom: 18, backgroundColor: '#0f562a', borderRadius: 18, padding: 14, alignItems: 'center', borderWidth: 1, borderColor: '#f9bf3a' },
+  heading: { color: '#f9bf3a', fontSize: 24, fontWeight: '800', textAlign: 'center' },
+  bookPage: { backgroundColor: '#fffdf9', borderRadius: 16, padding: 20, borderWidth: 1.5, borderColor: '#d4af37', shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.2, elevation: 5, minHeight: 350, justifyContent: 'space-between' },
   imageBox: { width: '100%', height: 200, borderRadius: 12, overflow: 'hidden', marginBottom: 16, backgroundColor: '#eee' },
   jiboniImage: { width: '100%', height: '100%' },
   bookTitle: { color: '#0f562a', fontSize: 20, fontWeight: '900', marginBottom: 10, textAlign: 'center', borderBottomWidth: 1, borderBottomColor: '#eee', paddingBottom: 8 },
   bookContent: { color: '#2c2c2c', fontSize: 15, lineHeight: 26, textAlign: 'justify', marginBottom: 20 },
-
-  // পেজ উল্টানোর নেভিগেশন বার
   paginationContainer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderTopWidth: 1, borderTopColor: '#eee', paddingTop: 14, marginTop: 10 },
   pageBtn: { backgroundColor: '#0f562a', paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8 },
   disabledBtn: { backgroundColor: '#ccc' },

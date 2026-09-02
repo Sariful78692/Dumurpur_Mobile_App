@@ -3,7 +3,8 @@ import {
   initializeFirestore, 
   persistentLocalCache, 
   persistentSingleTabManager, 
-  getFirestore 
+  getFirestore,
+  CACHE_SIZE_UNLIMITED
 } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
@@ -24,7 +25,10 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 let db;
 try {
   db = initializeFirestore(app, {
-    localCache: persistentLocalCache({ tabManager: persistentSingleTabManager() })
+    localCache: persistentLocalCache({
+      tabManager: persistentSingleTabManager(),
+      cacheSizeBytes: CACHE_SIZE_UNLIMITED,
+    })
   });
 } catch (e) {
   // যদি অলরেডি ইনিশিয়ালাইজড থাকে তবে আগের ইনস্ট্যান্সটি নিবে

@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import BottomNav from '../components/BottomNav';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // AsyncStorage যুক্ত করা হলো
 
 const backgroundImage = { uri: 'https://t4.ftcdn.net/jpg/04/24/19/47/360_F_424194700_YLn8PuaiqR36LI84T9E76ATDd6HrU2at.jpg' };
 
@@ -12,18 +13,25 @@ export default function NoticeScreen() {
   const [noticesList, setNoticesList] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ফায়ারবেস থেকে লাইভ নোটিশ ফেচ করা
   useEffect(() => {
     const fetchNotices = async () => {
       try {
+        // ১. ক্যাশ থেকে লোড
+        const cachedNotices = await AsyncStorage.getItem('@noticesList');
+        if (cachedNotices) {
+          setNoticesList(JSON.parse(cachedNotices));
+          setLoading(false);
+        }
+
+        // ২. ফায়ারবেস থেকে নতুন ডেটা আনা
         const querySnapshot = await getDocs(collection(db, "notices"));
         const list = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         
-        // চাইলে নতুন নোটিশগুলো আগে দেখানোর জন্য সর্ট করতে পারেন
         setNoticesList(list);
+        await AsyncStorage.setItem('@noticesList', JSON.stringify(list));
         setLoading(false);
       } catch (error) {
-        console.log("Error fetching notices:", error);
+        console.log("Error or Offline:", error);
         setLoading(false);
       }
     };
@@ -34,25 +42,22 @@ export default function NoticeScreen() {
     <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.background}>
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         
-        {/* ব্যাক বাটন */}
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
 
-        {/* হেডার */}
         <View style={styles.header}>
           <Text style={styles.heading}>জরুরি বিজ্ঞপ্তি</Text>
           <Text style={styles.subtitle}>দরবার শরীফের সাম্প্রতিক ঘোষণা ও খবর</Text>
         </View>
 
-        {/* লোডিং অথবা ডেটা লিস্ট */}
         {loading ? (
           <View style={{ marginTop: 40, alignItems: 'center' }}>
             <ActivityIndicator size="large" color="#f9bf3a" />
             <Text style={{ color: '#fff', marginTop: 10 }}>লোড হচ্ছে...</Text>
           </View>
         ) : noticesList.length === 0 ? (
-          <Text style={{ textAlign: 'center', color: '#fff', marginTop: 20 }}>কোনো বিজ্ঞপ্তি পাওয়া যায়নি।</Text>
+          <Text style={{ textAlign: 'center', color: '#fff', marginTop: 20 }}>কোনো বিজ্ঞপ্তি পাওয়া যায়নি।</Text>
         ) : (
           noticesList.map((item: any) => (
             <View key={item.id} style={styles.noticeCard}>
