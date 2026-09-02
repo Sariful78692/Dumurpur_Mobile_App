@@ -1,5 +1,11 @@
-import { initializeApp } from "firebase/app";
-import { initializeFirestore, persistentLocalCache, persistentSingleTabManager } from "firebase/firestore";
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { 
+  initializeFirestore, 
+  persistentLocalCache, 
+  persistentSingleTabManager, 
+  getFirestore 
+} from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyASu15Dzkk7Pk7KG9eJBIufxjXS7TFOevA",
@@ -11,9 +17,19 @@ const firebaseConfig = {
   measurementId: "G-S1PXNPBQ9M"
 };
 
-const app = initializeApp(firebaseConfig);
+// ১. ফায়ারবেস অ্যাপ আগে থেকে রান করা আছে কি না যাচাই
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
-// অফলাইন ডেটা সেভ রাখার জন্য ফায়ারস্টোর সেটআপ
-export const db = initializeFirestore(app, {
-  localCache: persistentLocalCache({ tabManager: persistentSingleTabManager() })
-});
+// ২. অফলাইন ক্যাশ সহ ফায়ারস্টোর হ্যান্ডলিং (রিলোড এরর প্রতিরোধে)
+let db;
+try {
+  db = initializeFirestore(app, {
+    localCache: persistentLocalCache({ tabManager: persistentSingleTabManager() })
+  });
+} catch (e) {
+  // যদি অলরেডি ইনিশিয়ালাইজড থাকে তবে আগের ইনস্ট্যান্সটি নিবে
+  db = getFirestore(app);
+}
+
+export const storage = getStorage(app);
+export { db };

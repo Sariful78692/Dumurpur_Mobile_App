@@ -265,17 +265,17 @@ const renderActionIcon = (title: string) => {
     case 'Islamic Calendar':
       return <MaterialCommunityIcons name="calendar-star" size={54} color="#64d8ff" />;
     case 'Donation':
-      return <MaterialCommunityIcons name="hand-heart" size={54} color="#f9bf3a" />;
+      return <MaterialCommunityIcons name="hand-heart" size={54} color="#ff4d6d" />;
     case 'Prayer':
       return <MaterialCommunityIcons name="mosque" size={54} color="#ffffff" />;
     case 'Buzurgoder Bani':
-      return <MaterialCommunityIcons name="book-open-page-variant" size={54} color="#f9bf3a" />;
+      return <MaterialCommunityIcons name="book-open-page-variant" size={54} color="#b565f5" />;
     case 'Jiboni':
       return <MaterialCommunityIcons name="book-account" size={54} color="#f9bf3a" />;
     case 'Namaz Shiksha':
-      return <MaterialCommunityIcons name="mosque" size={54} color="#f9bf3a" />;
+      return <MaterialCommunityIcons name="mosque" size={54} color="#4dd9ff" />;
     case 'Notice':
-      return <MaterialCommunityIcons name="bullhorn" size={54} color="#ff9f1c" />;
+      return <MaterialCommunityIcons name="bullhorn" size={54} color="#ff6b35" />;
     default:
       return null;
   }
@@ -285,7 +285,9 @@ const Homescreen = () => {
   const router = useRouter();
   const { width } = useWindowDimensions();
   const columnCount = width < 430 ? 2 : 3;
-  const cardWidth = Math.min((width - 32 - (14 * (columnCount - 1))) / columnCount, 160);
+  const horizontalPadding = width < 360 ? 10 : 16;
+  const gap = width < 360 ? 8 : 10;
+  const cardWidth = Math.min((width - (horizontalPadding * 2) - (gap * (columnCount - 1))) / columnCount, 160);
 
   const actions = [
     { title: 'Call Now', image: require('../assets/images/Babajaan1.png'), onPress: () => openLink('tel:6296429997') },
@@ -310,7 +312,7 @@ const Homescreen = () => {
     <SafeAreaView style={styles.container}>
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>
         <ScrollView
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={[styles.scrollContent, { paddingHorizontal: horizontalPadding }]}
           showsVerticalScrollIndicator={false}
         >
 
@@ -394,13 +396,13 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     marginTop: 24,
-    gap: 14,
+    gap: 10,
   },
   card: {
-    minHeight: 120,
+    minHeight: 104,
     backgroundColor: 'rgba(18, 94, 43, 0.93)',
     borderRadius: 18,
-    paddingVertical: 14,
+    paddingVertical: 9,
     paddingHorizontal: 8,
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -413,8 +415,8 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   cardIcon: {
-    width: 52,
-    height: 52,
+    width: 44,
+    height: 44,
   },
   cardText: {
     backgroundColor: '#f9bf3a',
