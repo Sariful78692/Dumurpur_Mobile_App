@@ -49,8 +49,11 @@ const Donation = () => {
             </View>
             <Text style={styles.phonePeWordmark}>PhonePe</Text>
           </View>
+          <Image source={require('../assets/images/QR.png')} style={styles.qrCode} resizeMode="contain" />
           <Text style={styles.numberLabel}>PhonePe Number</Text>
-          <Text selectable style={styles.phonePeNumber}>6296429997</Text>
+                    <Text selectable style={styles.phonePeNumber}>6296429997</Text>
+          <Text style={styles.accountName}>SEKH BASIR HOSSAIN SARKAR</Text>
+
           <Text style={styles.paymentHint}>Use this number in your PhonePe app to make a donation.</Text>
         </View>
       </ScrollView>
@@ -65,9 +68,9 @@ const styles = StyleSheet.create({
   backgroundImage: { flex: 1 },
   container: { padding: 16, paddingBottom: 90 },
   topBar: { marginBottom: 12 },
-  backButton: {
-    alignSelf: 'flex-start', backgroundColor: 'rgba(15, 86, 42, 0.95)', paddingHorizontal: 14,
-    paddingVertical: 10, borderRadius: 12, borderWidth: 1, borderColor: '#f9bf3a',
+  backButton: { marginTop: 0, 
+    alignSelf: 'flex-start', backgroundColor: 'rgba(15, 86, 42, 0.95)', paddingHorizontal: 12,
+    paddingVertical: 7, borderRadius: 18, borderWidth: 1, borderColor: '#f9bf3a',
   },
   backButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
   headerCard: {
@@ -87,5 +90,7 @@ const styles = StyleSheet.create({
   phonePeWordmark: { color: '#5f259f', fontSize: 29, fontWeight: '900' },
   numberLabel: { color: '#5f259f', fontSize: 13, fontWeight: '700' },
   phonePeNumber: { color: '#2e0f4f', fontSize: 28, fontWeight: '900', letterSpacing: 1.5, marginTop: 5 },
+  accountName: { color: '#0f562a', fontSize: 14, fontWeight: '800', textAlign: 'center', marginTop: 6 },
+  qrCode: { width: 190, height: 190, marginTop: 14 },
   paymentHint: { color: '#5b5263', fontSize: 12, textAlign: 'center', lineHeight: 18, marginTop: 12 },
 });

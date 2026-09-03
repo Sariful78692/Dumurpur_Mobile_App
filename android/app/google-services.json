@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1084153146828",
+    "project_id": "dumurpur-dorbar-sharif",
+    "storage_bucket": "dumurpur-dorbar-sharif.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1084153146828:android:42e6d6464abe8ddb884169",
+        "android_client_info": {
+          "package_name": "com.dumurpurdarbarsharif"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEO8XqHwLyeFI-r6gJsct1oDCU8vU6ii0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import BottomNav from '../components/BottomNav';
+import FontSizeControl from '../components/FontSizeControl';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // AsyncStorage যুক্ত করা হলো
 
 const backgroundImage = { uri: 'https://t4.ftcdn.net/jpg/04/24/19/47/360_F_424194700_YLn8PuaiqR36LI84T9E76ATDd6HrU2at.jpg' };
@@ -12,6 +13,7 @@ export default function NoticeScreen() {
   const router = useRouter();
   const [noticesList, setNoticesList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [fontSize, setFontSize] = useState(14);
 
   useEffect(() => {
     const fetchNotices = async () => {
@@ -42,6 +44,7 @@ export default function NoticeScreen() {
     <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.background}>
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         
+        <FontSizeControl size={fontSize} onChange={setFontSize} />
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
@@ -54,10 +57,10 @@ export default function NoticeScreen() {
         {loading ? (
           <View style={{ marginTop: 40, alignItems: 'center' }}>
             <ActivityIndicator size="large" color="#f9bf3a" />
-            <Text style={{ color: '#fff', marginTop: 10 }}>লোড হচ্ছে...</Text>
+            <Text style={{ color: '#0f562a', marginTop: 10 }}>লোড হচ্ছে...</Text>
           </View>
         ) : noticesList.length === 0 ? (
-          <Text style={{ textAlign: 'center', color: '#fff', marginTop: 20 }}>কোনো বিজ্ঞপ্তি পাওয়া যায়নি।</Text>
+          <Text style={{ textAlign: 'center', color: '#0f562a', marginTop: 20 }}>কোনো বিজ্ঞপ্তি পাওয়া যায়নি।</Text>
         ) : (
           noticesList.map((item: any) => (
             <View key={item.id} style={styles.noticeCard}>
@@ -66,8 +69,8 @@ export default function NoticeScreen() {
                   <Image source={{ uri: item.imageUrl }} style={styles.noticeImage} resizeMode="cover" />
                 </View>
               )}
-              <Text style={styles.noticeTitle}>{item.title}</Text>
-              <Text style={styles.noticeDesc}>{item.description}</Text>
+              <Text style={[styles.noticeTitle, { fontSize: fontSize + 4 }]}>{item.title}</Text>
+              <Text style={[styles.noticeDesc, { fontSize, lineHeight: fontSize * 1.55 }]}>{item.description}</Text>
             </View>
           ))
         )}
@@ -81,7 +84,7 @@ export default function NoticeScreen() {
 const styles = StyleSheet.create({
   background: { flex: 1 },
   container: { padding: 16, paddingBottom: 100 },
-  backButton: { alignSelf: 'flex-start', backgroundColor: '#0f562a', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 10, marginBottom: 10 },
+  backButton: { marginTop: 0, alignSelf: 'flex-start', backgroundColor: '#0f562a', paddingHorizontal: 12, paddingVertical: 7, borderRadius: 18, marginBottom: 10 },
   backText: { color: '#fff', fontWeight: '700' },
   header: { marginBottom: 18, backgroundColor: '#0f562a', borderRadius: 18, padding: 18, alignItems: 'center', borderWidth: 1, borderColor: '#f9bf3a' },
   heading: { color: '#f9bf3a', fontSize: 26, fontWeight: '800', textAlign: 'center' },

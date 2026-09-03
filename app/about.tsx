@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'expo-router';
 import {
   Image,
@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import BottomNav from '../components/BottomNav';
+import FontSizeControl from '../components/FontSizeControl';
 
 const backgroundImage = {
   uri: 'https://t4.ftcdn.net/jpg/04/24/19/47/360_F_424194700_YLn8PuaiqR36LI84T9E76ATDd6HrU2at.jpg',
@@ -17,11 +18,12 @@ const backgroundImage = {
 
 const About = () => {
   const router = useRouter();
+  const [fontSize, setFontSize] = useState(15);
 
   return (
     <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-        <View style={styles.topBar}>
+        <FontSizeControl size={fontSize} onChange={setFontSize} /><View style={styles.topBar}>
           <TouchableOpacity style={styles.backButton} onPress={() => router.back()} activeOpacity={0.8}>
             <Text style={styles.backButtonText}>← Back</Text>
           </TouchableOpacity>
@@ -33,8 +35,8 @@ const About = () => {
         </View>
 
         <View style={styles.card}>
-          <Text style={styles.heading}>আমাদের উদ্দেশ্য</Text>
-          <Text style={styles.text}>
+          <Text style={[styles.heading, { fontSize: fontSize + 2 }]}>আমাদের উদ্দেশ্য</Text>
+          <Text style={[styles.text, { fontSize, lineHeight: fontSize * 1.6 }]}>
             ডুমুরপুর চিশতিয়া দরবার শরীফ কেবল একটি প্রতিষ্ঠান নয়, 
             বরং স্রষ্টার প্রেম ও মানবসেবায় নিবেদিত এক প্রশান্তির মোহনা। 
             এটি এমন এক পবিত্র রুহানি পুণ্যভূমি, যেখানে এসে ক্লান্ত হৃদয় পায় 
@@ -44,8 +46,8 @@ const About = () => {
         </View>
 
         <View style={styles.card}>
-          <Text style={styles.heading}>আমাদের লক্ষ্য</Text>
-          <Text style={styles.text}>
+          <Text style={[styles.heading, { fontSize: fontSize + 2 }]}>আমাদের লক্ষ্য</Text>
+          <Text style={[styles.text, { fontSize, lineHeight: fontSize * 1.6 }]}>
             মহান রবের প্রতি ঐকান্তিক ভক্তি, প্রকৃত দ্বীনি শিক্ষা এবং 
             সৃষ্টির প্রতি নিঃস্বার্থ খেদমতের মাধ্যমে মানুষের অন্তরে ঈমানের 
             জ্যোতি প্রজ্জ্বলিত করা। পাশাপাশি, সমাজে দয়া ও সহমর্মিতার 
@@ -56,15 +58,15 @@ const About = () => {
         </View>
 
         <View style={styles.card}>
-          <Text style={styles.heading}>আমাদের আদর্শ</Text>
-          <Text style={styles.text}>
+          <Text style={[styles.heading, { fontSize: fontSize + 2 }]}>আমাদের আদর্শ</Text>
+          <Text style={[styles.text, { fontSize, lineHeight: fontSize * 1.6 }]}>
             {'• ঐক্য ও ভ্রাতৃত্ববোধ: সকল ভেদাভেদ ভুলে সাম্য, সম্প্রীতি ও ঐক্যের সুদৃঢ় মেলবন্ধন।\n• ইবাদত ও রুহানিয়াত: স্রষ্টার নৈকট্য লাভে নিরন্তর সাধনা, প্রার্থনা ও আত্মশুদ্ধি।\n• জ্ঞান ও প্রজ্ঞা: সুশিক্ষার মাধ্যমে অজ্ঞতার আঁধার দূর করে হৃদয়ে আলোর সঞ্চার।\n• খেদমত ও সহমর্মিতা: সৃষ্টির সেবায় নিজেকে বিলিয়ে দেওয়া এবং আর্তের কল্যাণে কাজ করা।\n• আদব ও শৃঙ্খলা: পারস্পরিক শ্রদ্ধা, বিনয়, নম্রতা এবং সুশৃঙ্খল জীবনবোধ।'}
           </Text>
         </View>
 
         <View style={styles.card}>
-          <Text style={styles.heading}>ডুমুরপুর চিশতিয়া নিজামিয়া দরবার</Text>
-          <Text style={styles.text}>
+          <Text style={[styles.heading, { fontSize: fontSize + 2 }]}>ডুমুরপুর চিশতিয়া নিজামিয়া দরবার</Text>
+          <Text style={[styles.text, { fontSize, lineHeight: fontSize * 1.6 }]}>
             ডুমুরপুর চিশতিয়া নিজামিয়া দরবার এবং এর মহান প্রতিষ্ঠাতা পীরে তরিকত মাওলানা বশির আল হাসান চিশতী-কে নিয়ে হৃদয়গ্রাহী এবং আধ্যাত্মিক ভাবগাম্ভীর্যপূর্ণ কিছু কথা নিচে তুলে ধরা হলো:
 
 ডুমুরপুর চিশতিয়া নিজামিয়া দরবার: আধ্যাত্মিক প্রেমের এক পুণ্যভূমি
@@ -112,12 +114,12 @@ const styles = StyleSheet.create({
   topBar: {
     marginBottom: 14,
   },
-  backButton: {
+  backButton: { marginTop: 0, 
     alignSelf: 'flex-start',
     backgroundColor: 'rgba(15, 86, 42, 0.95)',
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 18,
     borderWidth: 1,
     borderColor: '#f9bf3a',
   },

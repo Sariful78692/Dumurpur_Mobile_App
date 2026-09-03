@@ -24,7 +24,7 @@ const Book = () => {
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
             <View style={styles.headerCard}>
-              <Text style={styles.title}>Dumurpur Chistiya Dorbar Sharif</Text>
+              <Text style={styles.title}>PDF Book</Text>
             </View>
 
             <View style={styles.bookCard}>
@@ -101,14 +101,14 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginBottom: 12,
   },
-  backButton: {
+  backButton: { marginTop: 0, 
     alignSelf: 'center',
     marginTop: 18,
     marginBottom: 10,
     backgroundColor: 'rgba(15, 86, 42, 0.95)',
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 18,
     borderWidth: 1,
     borderColor: '#f9bf3a',
   },
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
 //       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>
 //         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
 //             <View style={styles.headerCard}>
-//               <Text style={styles.title}>Dumurpur Chistiya Dorbar Sharif</Text>
+//               <Text style={styles.title}>PDF Book</Text>
 //             </View>
 
 //             {loading ? (
@@ -404,14 +404,14 @@ const styles = StyleSheet.create({
 //     paddingVertical: 8,
 //     borderRadius: 999,
 //   },
-//   backButton: {
+//   backButton: { marginTop: 0, 
 //     alignSelf: 'center',
 //     marginTop: 18,
 //     marginBottom: 10,
 //     backgroundColor: 'rgba(15, 86, 42, 0.95)',
-//     paddingHorizontal: 14,
-//     paddingVertical: 10,
-//     borderRadius: 12,
+//     paddingHorizontal: 12,
+//     paddingVertical: 7,
+//     borderRadius: 18,
 //     borderWidth: 1,
 //     borderColor: '#f9bf3a',
 //   },

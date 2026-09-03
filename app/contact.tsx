@@ -88,10 +88,10 @@ const Contact = () => {
         {loading ? (
           <View style={{ marginTop: 40, alignItems: 'center' }}>
             <ActivityIndicator size="large" color="#f9bf3a" />
-            <Text style={{ color: '#fff', marginTop: 10 }}>কন্টাক্ট লোড হচ্ছে...</Text>
+            <Text style={{ color: '#0f562a', marginTop: 10 }}>কন্টাক্ট লোড হচ্ছে...</Text>
           </View>
         ) : contactsList.length === 0 ? (
-          <Text style={{ textAlign: 'center', color: '#fff', marginTop: 20, fontSize: 16 }}>কোনো কন্টাক্ট পাওয়া যায়নি।</Text>
+          <Text style={{ textAlign: 'center', color: '#0f562a', marginTop: 20, fontSize: 16 }}>কোনো কন্টাক্ট পাওয়া যায়নি।</Text>
         ) : (
           <View style={styles.listContainer}>
             {contactsList.map((item: any) => {
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   backgroundImage: { flex: 1 },
   container: { padding: 16, paddingBottom: 90 },
   topBar: { marginBottom: 14 },
-  backButton: { alignSelf: 'flex-start', backgroundColor: 'rgba(15, 86, 42, 0.95)', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 12, borderWidth: 1, borderColor: '#f9bf3a' },
+  backButton: { marginTop: 0, alignSelf: 'flex-start', backgroundColor: 'rgba(15, 86, 42, 0.95)', paddingHorizontal: 12, paddingVertical: 7, borderRadius: 18, borderWidth: 1, borderColor: '#f9bf3a' },
   backButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
   headerCard: { backgroundColor: 'rgba(15,86,42,0.90)', borderRadius: 16, paddingVertical: 16, paddingHorizontal: 18, alignItems: 'center', marginBottom: 20, borderWidth: 1, borderColor: '#f9bf3a' },
   title: { color: '#f9bf3a', fontSize: 24, fontWeight: '800', textAlign: 'center' },

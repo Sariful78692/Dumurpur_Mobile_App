@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
   backgroundImage: { flex: 1 },
   container: { padding: 16, paddingBottom: 90 },
   topBar: { marginBottom: 12 },
-  backButton: { alignSelf: 'flex-start', backgroundColor: 'rgba(15, 86, 42, 0.95)', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 12, borderWidth: 1, borderColor: '#f9bf3a' },
+  backButton: { marginTop: 0, alignSelf: 'flex-start', backgroundColor: 'rgba(15, 86, 42, 0.95)', paddingHorizontal: 12, paddingVertical: 7, borderRadius: 18, borderWidth: 1, borderColor: '#f9bf3a' },
   backButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
   calendarShell: { backgroundColor: '#fff', borderRadius: 16, overflow: 'hidden', borderWidth: 2, borderColor: '#0f562a' },
   headerBar: { alignItems: 'center', backgroundColor: '#0f562a', paddingHorizontal: 12, paddingVertical: 16 },

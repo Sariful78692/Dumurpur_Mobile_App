@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   background: { flex: 1 },
   content: { padding: 16, paddingBottom: 30 },
-  backButton: { alignSelf: 'flex-start', backgroundColor: '#0f562a', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 10 },
+  backButton: { marginTop: 0, alignSelf: 'flex-start', backgroundColor: '#0f562a', paddingHorizontal: 12, paddingVertical: 7, borderRadius: 18 },
   backText: { color: '#fff', fontWeight: '700' },
   titleCard: { marginTop: 14, backgroundColor: '#0f562a', borderRadius: 14, padding: 14, alignItems: 'center' },
   title: { color: '#f9bf3a', fontSize: 20, fontWeight: '800' },

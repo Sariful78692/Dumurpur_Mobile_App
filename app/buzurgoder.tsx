@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import BottomNav from '../components/BottomNav';
+import FontSizeControl from '../components/FontSizeControl';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // AsyncStorage যুক্ত করা হলো
 
 const backgroundImage = { uri: 'https://t4.ftcdn.net/jpg/04/24/19/47/360_F_424194700_YLn8PuaiqR36LI84T9E76ATDd6HrU2at.jpg' };
@@ -13,6 +14,7 @@ export default function Buzurgoder() {
   const [expandedSection, setExpandedSection] = useState<number | null>(null);
   const [quotesList, setQuotesList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [fontSize, setFontSize] = useState(15);
 
   // ফায়ারবেস থেকে এবং অফলাইন মেমোরি থেকে বাণী ফেচ করা
   useEffect(() => {
@@ -67,6 +69,7 @@ export default function Buzurgoder() {
     <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.background}>
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         
+        <FontSizeControl size={fontSize} onChange={setFontSize} />
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
@@ -79,10 +82,10 @@ export default function Buzurgoder() {
         {loading ? (
           <View style={{ marginTop: 40, alignItems: 'center' }}>
             <ActivityIndicator size="large" color="#f9bf3a" />
-            <Text style={{ color: '#fff', marginTop: 10 }}>লোড হচ্ছে...</Text>
+            <Text style={{ color: '#0f562a', marginTop: 10 }}>লোড হচ্ছে...</Text>
           </View>
         ) : sections.length === 0 ? (
-          <Text style={{ textAlign: 'center', color: '#fff', marginTop: 20 }}>কোনো বাণী পাওয়া যায়নি।</Text>
+          <Text style={{ textAlign: 'center', color: '#0f562a', marginTop: 20 }}>কোনো বাণী পাওয়া যায়নি।</Text>
         ) : (
           sections.map((section, sectionIndex) => {
             const authorImage = section.quotes.find((q: any) => q.imageUrl)?.imageUrl;
@@ -106,8 +109,8 @@ export default function Buzurgoder() {
 
                 {expandedSection === sectionIndex && section.quotes.map((item: any) => (
                   <View key={item.id} style={styles.quoteCard}>
-                    <Text style={styles.label}>{item.title || "উপদেশ"}</Text>
-                    <Text style={styles.quote}>“{item.bani}”</Text>
+                    <Text style={[styles.label, { fontSize }]}>{item.title || "উপদেশ"}</Text>
+                    <Text style={[styles.quote, { fontSize, lineHeight: fontSize * 1.6 }]}>“{item.bani}”</Text>
                   </View>
                 ))}
               </View>
@@ -124,7 +127,7 @@ export default function Buzurgoder() {
 const styles = StyleSheet.create({
   background: { flex: 1 },
   container: { padding: 16, paddingBottom: 100 },
-  backButton: { alignSelf: 'flex-start', backgroundColor: '#0f562a', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 10, marginBottom: 10 },
+  backButton: { marginTop: 0, alignSelf: 'flex-start', backgroundColor: '#0f562a', paddingHorizontal: 12, paddingVertical: 7, borderRadius: 18, marginBottom: 10 },
   backText: { color: '#fff', fontWeight: '700' },
   header: { marginBottom: 18, backgroundColor: '#0f562a', borderRadius: 18, padding: 18, alignItems: 'center', borderWidth: 1, borderColor: '#f9bf3a' },
   heading: { color: '#f9bf3a', fontSize: 26, fontWeight: '800', textAlign: 'center' },

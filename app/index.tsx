@@ -63,7 +63,7 @@
 
 //   const actions = [
 //     { title: 'Call Now', image: require('../assets/images/Babajaan1.png'), onPress: () => openLink('tel:6296429997') },
-//     { title: 'Book', image: { uri: 'https://img.magnific.com/free-vector/books-stack-realistic_1284-4735.jpg?semt=ais_hybrid&w=740&q=80' }, onPress: () => router.push('/library') },
+//     { title: 'PDF Book', image: { uri: 'https://img.magnific.com/free-vector/books-stack-realistic_1284-4735.jpg?semt=ais_hybrid&w=740&q=80' }, onPress: () => router.push('/library') },
 //     { title: 'Location', image: { uri: 'https://static-00.iconduck.com/assets.00/location-position-icon-1640x2048-6jqx3f7e.png' }, onPress: () => openLink('https://maps.app.goo.gl/m7EBbzA2Rwksh6oA7?g_st=ac') },
 //     { title: 'YouTube', image: { uri: 'https://static.vecteezy.com/system/resources/thumbnails/023/986/480/small/youtube-logo-youtube-logo-transparent-youtube-icon-transparent-free-free-png.png' }, onPress: () => openLink('https://www.youtube.com/@DUMURPURCHISTIYADARBARSHARIF') },
 //     { title: 'Facebook', image: { uri: 'https://static.vecteezy.com/system/resources/previews/042/127/218/non_2x/round-circle-blue-facebook-logo-with-long-shadow-on-a-transparent-background-free-png.png' }, onPress: () => openLink('https://www.facebook.com/groups/1304852206304267') },
@@ -270,7 +270,7 @@ const renderActionIcon = (title: string) => {
       return <MaterialCommunityIcons name="mosque" size={54} color="#ffffff" />;
     case 'Buzurgoder Bani':
       return <MaterialCommunityIcons name="book-open-page-variant" size={54} color="#b565f5" />;
-    case 'Jiboni':
+    case 'Buzurgoder Jiboni':
       return <MaterialCommunityIcons name="book-account" size={54} color="#f9bf3a" />;
     case 'Namaz Shiksha':
       return <MaterialCommunityIcons name="mosque" size={54} color="#4dd9ff" />;
@@ -291,7 +291,7 @@ const Homescreen = () => {
 
   const actions = [
     { title: 'Call Now', image: require('../assets/images/Babajaan1.png'), onPress: () => openLink('tel:6296429997') },
-    { title: 'Book', image: { uri: 'https://img.magnific.com/free-vector/books-stack-realistic_1284-4735.jpg?semt=ais_hybrid&w=740&q=80' }, onPress: () => router.push('/library') },
+    { title: 'PDF Book', image: { uri: 'https://img.magnific.com/free-vector/books-stack-realistic_1284-4735.jpg?semt=ais_hybrid&w=740&q=80' }, onPress: () => router.push('/library') },
     { title: 'Location', image: { uri: 'https://static-00.iconduck.com/assets.00/location-position-icon-1640x2048-6jqx3f7e.png' }, onPress: () => openLink('https://maps.app.goo.gl/m7EBbzA2Rwksh6oA7?g_st=ac') },
     { title: 'YouTube', image: { uri: 'https://static.vecteezy.com/system/resources/thumbnails/023/986/480/small/youtube-logo-youtube-logo-transparent-youtube-icon-transparent-free-free-png.png' }, onPress: () => openLink('https://www.youtube.com/@DUMURPURCHISTIYADARBARSHARIF') },
     { title: 'Facebook', image: { uri: 'https://static.vecteezy.com/system/resources/previews/042/127/218/non_2x/round-circle-blue-facebook-logo-with-long-shadow-on-a-transparent-background-free-png.png' }, onPress: () => openLink('https://www.facebook.com/groups/1304852206304267') },
@@ -303,7 +303,8 @@ const Homescreen = () => {
     { title: 'Donation', image: { uri: 'https://cdn-icons-png.flaticon.com/512/2970/2970287.png' }, onPress: () => router.push('/donation' as never) },
     { title: 'Prayer', image: { uri: 'https://cdn-icons-png.flaticon.com/512/2905/2905154.png' }, onPress: () => router.push('/prayer-times' as never) },
     { title: 'Buzurgoder Bani', image: { uri: 'https://cdn-icons-png.flaticon.com/512/3145/3145765.png' }, onPress: () => router.push('/buzurgoder' as never) },
-    { title: 'Jiboni', image: { uri: 'https://cdn-icons-png.flaticon.com/512/3389/3389081.png' }, onPress: () => router.push('/jiboni' as never) },
+    { title: 'Buzurgoder Jiboni', image: { uri: 'https://cdn-icons-png.flaticon.com/512/3389/3389081.png' }, onPress: () => router.push('/jiboni' as never) },
+    { title: 'Gazal Book', image: require('../assets/images/GazalBook.png'), onPress: () => router.push('/gazal-book' as never) },
     { title: 'Namaz Shiksha', image: { uri: 'https://cdn-icons-png.flaticon.com/512/2905/2905154.png' }, onPress: () => router.push('/namaz-shiksha' as never) },
     { title: 'Notice', image: { uri: 'https://cdn-icons-png.flaticon.com/512/2665/2665038.png' }, onPress: () => router.push('/notice' as never) },
   ];

@@ -1,0 +1,5 @@
+import React from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useRouter } from 'expo-router';
+export default function ScreenHeader({ title, subtitle }: { title: string; subtitle?: string }) { const router = useRouter(); return <View style={styles.row}><TouchableOpacity style={styles.back} onPress={() => router.back()}><Text style={styles.backText}>‹</Text></TouchableOpacity><View style={styles.titleBox}><Text style={styles.title} numberOfLines={1}>{title}</Text>{subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}</View></View>; }
+const styles = StyleSheet.create({ row: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 14 }, back: { width: 38, height: 38, borderRadius: 19, backgroundColor: '#12612f', borderWidth: 1, borderColor: '#f9bf3a', alignItems: 'center', justifyContent: 'center' }, backText: { color: '#fff', fontSize: 30 }, titleBox: { flex: 1, backgroundColor: 'rgba(14,96,47,.94)', borderRadius: 13, paddingVertical: 9 }, title: { color: '#f9bf3a', fontSize: 20, fontWeight: '800', textAlign: 'center' }, subtitle: { color: '#eaf7ee', fontSize: 11, textAlign: 'center' } });

@@ -9,10 +9,12 @@ import * as Device from 'expo-device';
 import Constants from 'expo-constants';
 import { db } from '../firebase'; 
 import { doc, setDoc } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
     shouldPlaySound: true,
     shouldSetBadge: false,
   }),
@@ -23,6 +25,12 @@ async function registerForPushNotificationsAsync() {
   
   // চেক করবে ডিভাইসটি মোবাইল কি না এবং ওয়েব ব্রাউজার যেন না হয়
   if (Platform.OS !== 'web') {
+    if (Platform.OS === 'android') {
+      await Notifications.setNotificationChannelAsync('default', {
+        name: 'Default', importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250], lightColor: '#f9bf3a',
+      });
+    }
     if (Device.isDevice) {
       const { status: existingStatus } = await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
@@ -38,7 +46,7 @@ async function registerForPushNotificationsAsync() {
       }
       
       token = (await Notifications.getExpoPushTokenAsync({
-        projectId: Constants.expoConfig?.extra?.eas?.projectId,
+        projectId: Constants.expoConfig?.extra?.eas?.projectId || 'fc05220f-16a3-44c0-a9e4-6a9e59379298',
       })).data;
       
     } else {
@@ -56,12 +64,16 @@ export default function RootLayout() {
   useEffect(() => {
     registerForPushNotificationsAsync().then(token => {
       if (token) {
+        AsyncStorage.setItem('@pushToken', token);
         setDoc(doc(db, 'push_tokens', token), {
           token: token,
-          dateAdded: new Date()
-        }).catch(err => console.log("Token Save Error: ", err));
+          platform: Platform.OS,
+          dateAdded: new Date(),
+          updatedAt: new Date(),
+          active: true,
+        }, { merge: true }).catch(err => console.log("Token Save Error: ", err));
       }
-    });
+    }).catch(err => console.log('Push registration error:', err));
   }, []);
 
   return (

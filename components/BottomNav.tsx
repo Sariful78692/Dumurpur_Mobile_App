@@ -8,7 +8,7 @@ type BottomNavProps = {
 
 const items = [
   { label: 'Home', route: '/', icon: '⌂', key: 'home', color: '#f9bf3a', action: 'route' },
-  { label: 'Book', route: '/library', icon: '📖', key: 'book', color: '#58c2ff', action: 'route' },
+  { label: 'PDF Book', route: '/library', icon: '📖', key: 'book', color: '#58c2ff', action: 'route' },
   { label: 'About', route: '/about', icon: 'ℹ', key: 'about', color: '#7ee081', action: 'route' },
   { label: 'Location', route: 'https://maps.app.goo.gl/m7EBbzA2Rwksh6oA7?g_st=ac', icon: '📍', key: 'location', color: '#ff7a59', action: 'link' },
   { label: 'Contact', route: '/contact', icon: '✉', key: 'contact', color: '#ffb703', action: 'route' },
