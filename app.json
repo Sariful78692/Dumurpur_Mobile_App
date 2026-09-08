@@ -4,7 +4,7 @@
     "slug": "Dumurpur_Darbar_Sharif",
     "version": "1.0.0",
     "orientation": "portrait",
-  "icon": "./assets/images/Dumurpur_logo.png",
+  "icon": "./assets/images/Dumurpur_logo-square.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -19,7 +19,7 @@
     "android": {
       "googleServicesFile": "./android/app/google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/Dumurpur_logo.png",
+        "foregroundImage": "./assets/images/Dumurpur_logo-square.png",
         "backgroundColor": "#0f562a"
       },
       "package": "com.dumurpurdarbarsharif"
@@ -56,3 +56,4 @@
     }
   }
 }
+

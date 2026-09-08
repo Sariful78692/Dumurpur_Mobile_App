@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginBottom: 12,
   },
-  backButton: { marginTop: 0, 
+  backButton: {
     alignSelf: 'center',
     marginTop: 18,
     marginBottom: 10,

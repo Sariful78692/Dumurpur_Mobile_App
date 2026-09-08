@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import * as WebBrowser from 'expo-web-browser';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -99,7 +99,7 @@ const Homescreen = () => {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.headerCard}>
-            <TouchableOpacity onPress={() => router.push('/admin' as never)}><Text style={styles.adminButtonText}>Admin</Text></TouchableOpacity><Text style={styles.title}>Dumurpur Chistiya Dorbar Sharif</Text>
+            <Text style={styles.title}>Dumurpur Chistiya Dorbar Sharif</Text>
             <Text style={styles.subtitle}>Hooghly, Pandua, Chistiya Nagar</Text>
             <Image source={require('../assets/images/KhankahSarif.jpg')} style={styles.heroImage} resizeMode="cover" />
           </View>

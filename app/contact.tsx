@@ -4,7 +4,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // AsyncStorage যুক্ত করা হলো
+import AsyncStorage from '@react-native-async-storage/async-storage'; // AsyncStorage à¦¯à§à¦•à§à¦¤ à¦•à¦°à¦¾ à¦¹à¦²à§‹
 import {
   Image,
   ImageBackground,
@@ -43,20 +43,20 @@ const openLink = async (url: string) => {
 
 const Contact = () => {
   const router = useRouter();
-  const [contactsList, setContactsList] = useState([]);
+  const [contactsList, setContactsList] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchContacts = async () => {
       try {
-        // ১. ক্যাশ থেকে লোড
+        // à§§. à¦•à§à¦¯à¦¾à¦¶ à¦¥à§‡à¦•à§‡ à¦²à§‹à¦¡
         const cachedContacts = await AsyncStorage.getItem('@contactsList');
         if (cachedContacts) {
           setContactsList(JSON.parse(cachedContacts));
           setLoading(false);
         }
 
-        // ২. ফায়ারবেস থেকে নতুন ডেটা আনা
+        // à§¨. à¦«à¦¾à§Ÿà¦¾à¦°à¦¬à§‡à¦¸ à¦¥à§‡à¦•à§‡ à¦¨à¦¤à§à¦¨ à¦¡à§‡à¦Ÿà¦¾ à¦†à¦¨à¦¾
         const querySnapshot = await getDocs(collection(db, "contacts"));
         const list = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         
@@ -77,7 +77,7 @@ const Contact = () => {
         
         <View style={styles.topBar}>
           <TouchableOpacity style={styles.backButton} onPress={() => router.back()} activeOpacity={0.8}>
-            <Text style={styles.backButtonText}>← Back</Text>
+            <Text style={styles.backButtonText}>← ফিরে যান</Text>
           </TouchableOpacity>
         </View>
 
@@ -88,10 +88,10 @@ const Contact = () => {
         {loading ? (
           <View style={{ marginTop: 40, alignItems: 'center' }}>
             <ActivityIndicator size="large" color="#f9bf3a" />
-            <Text style={{ color: '#0f562a', marginTop: 10 }}>কন্টাক্ট লোড হচ্ছে...</Text>
+            <Text style={{ color: '#0f562a', marginTop: 10 }}>কনট্যাক্ট লোড হচ্ছে...</Text>
           </View>
         ) : contactsList.length === 0 ? (
-          <Text style={{ textAlign: 'center', color: '#0f562a', marginTop: 20, fontSize: 16 }}>কোনো কন্টাক্ট পাওয়া যায়নি।</Text>
+          <Text style={{ textAlign: 'center', color: '#0f562a', marginTop: 20, fontSize: 16 }}>কোনো কনট্যাক্ট পাওয়া যায়নি।</Text>
         ) : (
           <View style={styles.listContainer}>
             {contactsList.map((item: any) => {

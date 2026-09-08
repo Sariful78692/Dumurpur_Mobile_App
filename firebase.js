@@ -4,6 +4,7 @@ import {
   persistentLocalCache, 
   persistentSingleTabManager, 
   getFirestore,
+  Firestore,
   CACHE_SIZE_UNLIMITED
 } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
@@ -22,6 +23,7 @@ const firebaseConfig = {
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
 // ২. অফলাইন ক্যাশ সহ ফায়ারস্টোর হ্যান্ডলিং (রিলোড এরর প্রতিরোধে)
+/** @type {import("firebase/firestore").Firestore} */
 let db;
 try {
   db = initializeFirestore(app, {

@@ -3,29 +3,31 @@ import { ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View, 
 import { useRouter } from 'expo-router';
 import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
+
+type Notice = { id: string; title?: string; description?: string; imageUrl?: string };
 import BottomNav from '../components/BottomNav';
 import FontSizeControl from '../components/FontSizeControl';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // AsyncStorage যুক্ত করা হলো
+import AsyncStorage from '@react-native-async-storage/async-storage'; // AsyncStorage à¦¯à§à¦•à§à¦¤ à¦•à¦°à¦¾ à¦¹à¦²à§‹
 
 const backgroundImage = { uri: 'https://t4.ftcdn.net/jpg/04/24/19/47/360_F_424194700_YLn8PuaiqR36LI84T9E76ATDd6HrU2at.jpg' };
 
 export default function NoticeScreen() {
   const router = useRouter();
-  const [noticesList, setNoticesList] = useState([]);
+  const [noticesList, setNoticesList] = useState<Notice[]>([]);
   const [loading, setLoading] = useState(true);
   const [fontSize, setFontSize] = useState(14);
 
   useEffect(() => {
     const fetchNotices = async () => {
       try {
-        // ১. ক্যাশ থেকে লোড
+        // à§§. à¦•à§à¦¯à¦¾à¦¶ à¦¥à§‡à¦•à§‡ à¦²à§‹à¦¡
         const cachedNotices = await AsyncStorage.getItem('@noticesList');
         if (cachedNotices) {
           setNoticesList(JSON.parse(cachedNotices));
           setLoading(false);
         }
 
-        // ২. ফায়ারবেস থেকে নতুন ডেটা আনা
+        // à§¨. à¦«à¦¾à§Ÿà¦¾à¦°à¦¬à§‡à¦¸ à¦¥à§‡à¦•à§‡ à¦¨à¦¤à§à¦¨ à¦¡à§‡à¦Ÿà¦¾ à¦†à¦¨à¦¾
         const querySnapshot = await getDocs(collection(db, "notices"));
         const list = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         
@@ -46,7 +48,7 @@ export default function NoticeScreen() {
         
         <FontSizeControl size={fontSize} onChange={setFontSize} />
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Text style={styles.backText}>← Back</Text>
+          <Text style={styles.backText}>← ফিরে যান</Text>
         </TouchableOpacity>
 
         <View style={styles.header}>
@@ -95,3 +97,4 @@ const styles = StyleSheet.create({
   noticeTitle: { color: '#0f562a', fontSize: 18, fontWeight: '800', marginBottom: 6 },
   noticeDesc: { color: '#333', fontSize: 14, lineHeight: 22, textAlign: 'justify' },
 });
+
