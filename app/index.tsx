@@ -88,7 +88,7 @@ const Homescreen = () => {
     { title: 'Gazal Book', image: { uri: 'https://cdn-icons-png.flaticon.com/512/2991/2991195.png' }, onPress: () => router.push('/gazal-book' as never) },
   
     { title: 'Namaz Shiksha', image: { uri: 'https://cdn-icons-png.flaticon.com/512/2905/2905154.png' }, onPress: () => router.push('/namaz-shiksha' as never) },
-    { title: 'Notice', image: { uri: 'https://cdn-icons-png.flaticon.com/512/2665/2665038.png' }, onPress: () => router.push('/notice' as never) },
+    { title: 'Notice and Others', image: { uri: 'https://cdn-icons-png.flaticon.com/512/2665/2665038.png' }, onPress: () => router.push('/notice' as never) },
   ];
 
   return (

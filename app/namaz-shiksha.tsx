@@ -1,50 +1,144 @@
-import React, { useState } from 'react';
-import { ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 import { useRouter } from 'expo-router';
+import { collection, getDocs } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { db } from '../firebase';
 import BottomNav from '../components/BottomNav';
 import FontSizeControl from '../components/FontSizeControl';
 
 const backgroundImage = { uri: 'https://t4.ftcdn.net/jpg/04/24/19/47/360_F_424194700_YLn8PuaiqR36LI84T9E76ATDd6HrU2at.jpg' };
-const prerequisites = ['শরীর ও কাপড় পাক হওয়া: ওজু বা গোসলের মাধ্যমে পবিত্রতা অর্জন এবং পরিষ্কার পোশাক পরিধান।', 'স্থান পাক হওয়া: সেজদা করার জায়গা পবিত্র হওয়া।', 'সতর ঢাকা: পুরুষদের নাভি থেকে হাঁটু পর্যন্ত এবং নারীদের মুখমণ্ডল, দুই হাত ও পায়ের পাতা ছাড়া সমস্ত শরীর ঢেকে রাখা।', 'কিবলামুখী হওয়া: কাবার দিকে মুখ করে দাঁড়ানো।', 'ওয়াক্ত হওয়া: নির্দিষ্ট ওয়াক্তের নামাজ সঠিক সময়ে আদায় করা।', 'নিয়ত করা: যে ওয়াক্তের নামাজ পড়ছেন অন্তরে তার সংকল্প করা।'];
-const rakats = [['ফজর', '২', '২', '—', '—', '৪'], ['জোহর', '৪', '৪', '২ সুন্নত + ২ নফল', '—', '১২'], ['আসর', '—', '৪', '—', '—', '৪'], ['মাগরিব', '—', '৩', '২ সুন্নত + ২ নফল', '—', '৭'], ['এশা', '৪', '৪', '২ সুন্নত + ২ নফল', '৩', '১৭']];
-const steps = [
-  ['নিয়ত ও তাকবিরে তাহরিমা', 'কিবলামুখী হয়ে “আল্লাহু আকবার” বলে হাত উঠিয়ে হাত বাঁধুন।'],
-  ['ছানা ও ক্বিরাআত', 'ছানা পাঠ করে আউজু-বিসমিল্লাহ, সূরা ফাতিহা এবং অন্য একটি সূরা পড়ুন।'],
-  ['রুকু', '“আল্লাহু আকবার” বলে রুকুতে গিয়ে অন্তত ৩ বার “সুবহানা রব্বিয়াল আজীম” পড়ুন।'],
-  ['কাউমা', '“সামিআল্লাহু লিমান হামিদাহ” বলে সোজা হয়ে দাঁড়িয়ে “রব্বানা লাকাল হামদ” বলুন।'],
-  ['সেজদা ও জলসা', 'দুটি সেজদা করুন; প্রতিটি সেজদায় অন্তত ৩ বার “সুবহানা রব্বিয়াল আলা” পড়ুন।'],
-  ['শেষ বৈঠক ও সালাম', 'তাশাহহুদ, দরুদ শরীফ ও দোআয়ে মাসুরা পড়ে ডানে ও বামে সালাম ফেরান।'],
-];
-const duas = [['তাশাহহুদ (আত্তাহিয়্যাতু)', 'আত্তাহিয়্যাতু লিল্লাহি ওয়াস সালাওয়াতু ওয়াত তাইয়্যিবাতু, আসসালামু আলাইকা আইয়্যুহান নাবিয়্যু ওয়া রাহমাতুল্লাহি ওয়া বারাকাতুহু, আসসালামু আলাইনা ওয়া আলা ইবাদিল্লাহিস সালিহীন। আশহাদু আল-লা ইলাহা ইল্লাল্লাহু ওয়া আশহাদু আন্না মুহাম্মাদান আবদুহু ওয়া রাসুলুহ।'], ['দরুদ শরীফ', 'আল্লাহুম্মা সাল্লি আলা মুহাম্মাদিও ওয়া আলা আলি মুহাম্মাদ, কামা সাল্লাইতা আলা ইব্রাহিমা ওয়া আলা আলি ইব্রাহিম, ইন্নাকা হামিদুম মাজিদ। আল্লাহুম্মা বারিক আলা মুহাম্মাদিও ওয়া আলা আলি মুহাম্মাদ, কামা বারাক্তা আলা ইব্রাহিমা ওয়া আলা আলি ইব্রাহিম, ইন্নাকা হামিদুম মাজিদ।'], ['দোআয়ে মাসুরা', 'আল্লাহুম্মা ইন্নি জলামতু নাফসি জুলমান কাসিরাও ওয়া লা ইয়াগফিরুজ জুনুবা ইল্লা আনতা, ফাগফিরলি মাগফিরাতাম মিন ইনদিকা ওয়ারহামনি ইন্নাকা আনতাল গাফুরুর রাহিম।']];
+type ShikshaItem = { id: string; title?: string; description?: string; imageUrl?: string; order?: number };
 
-export default function NamazShiksha() {
-  const router = useRouter(); const [open, setOpen] = useState<number | null>(0); const [fontSize, setFontSize] = useState(15);
-  const toggle = (i: number) => setOpen(open === i ? null : i);
-  return <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.background}><ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}><FontSizeControl size={fontSize} onChange={setFontSize} />
-    <TouchableOpacity style={styles.backButton} onPress={() => router.back()}><Text style={styles.backText}>← Back</Text></TouchableOpacity>
-    <View style={styles.header}><Text style={styles.heading}>নামাজ শিক্ষা</Text><Text style={styles.subtitle}>সহজভাবে নামাজ আদায়ের প্রয়োজনীয় নির্দেশনা</Text></View>
-    <Section title="১. নামাজের প্রধান পূর্বশর্ত (ফরজসমূহ)" index={0} open={open} toggle={toggle}><View>{prerequisites.map((x, i) => <Text key={i} style={[styles.item, { fontSize, lineHeight: fontSize * 1.65 }]}>• {x}</Text>)}</View></Section>
-    <Section title="২. পাঁচ ওয়াক্ত নামাজের মোট রাকাত" index={1} open={open} toggle={toggle}><View style={styles.table}>{['ওয়াক্ত','সুন্নত','ফরজ','নফল','বিতর','মোট'].map(x => <Text key={x} style={[styles.cell, styles.headCell]}>{x}</Text>)}{rakats.flat().map((x,i) => <Text key={i} style={styles.cell}>{x}</Text>)}</View></Section>
-    <Section title="৩. ধাপে ধাপে ২ রাকাত নামাজ" index={2} open={open} toggle={toggle}>{steps.map(([a,b],i)=><View key={i} style={styles.quoteCard}><Text style={[styles.label, { fontSize }]}>{i+1}. {a}</Text><Text style={[styles.quote, { fontSize, lineHeight: fontSize * 1.6 }]}>{b}</Text></View>)}</Section>
-    <Section title="৪. বৈঠকে পঠিত আবশ্যক দোয়া" index={3} open={open} toggle={toggle}>{duas.map(([a,b])=><View key={a} style={styles.quoteCard}><Text style={[styles.label, { fontSize }]}>{a}</Text><Text style={[styles.quote, { fontSize, lineHeight: fontSize * 1.6 }]}>{b}</Text></View>)}<View style={styles.quoteCard}><Text style={[styles.label, { fontSize }]}>সালাম ফেরানো</Text><Text style={[styles.quote, { fontSize, lineHeight: fontSize * 1.6 }]}>ডানে ঘাড় ঘুরিয়ে বলুন: “আসসালামু আলাইকুম ওয়া রাহমাতুল্লাহ”।</Text> <Text style={[styles.quote, { fontSize, lineHeight: fontSize * 1.6 }]}>বামে ঘাড় ঘুরিয়ে বলুন: “আসসালামু আলাইকুম ওয়া রাহমাতুল্লাহ”।</Text></View></Section>
-    <Section title="৫. ওজুর নিয়ত ও ৪টি ফরজ" index={4} open={open} toggle={toggle}>
-      <View style={styles.quoteCard}>
-        <Text style={[styles.label, { fontSize: fontSize + 1 }]}>📝 ওজুর নিয়ত</Text>
-        <Text style={[styles.quote, { fontSize, lineHeight: fontSize * 1.6 }]}>ওজু শুরু করার আগে মনে মনে ওজু করার ইচ্ছা বা সংকল্প করাই হলো নিয়ত। মুখে উচ্চারণ করা জরুরি নয়। তবে চাইলে মুখে বা মনে মনে এভাবে নিয়ত করতে পারেন:</Text>
-        <Text style={[styles.item, { fontSize, lineHeight: fontSize * 1.6 }]}>• বাংলা নিয়ত: "আমি পবিত্রতা অর্জনের জন্য ওজু করছি।"</Text>
-        <Text style={[styles.item, { fontSize, lineHeight: fontSize * 1.6 }]}>• আরবি নিয়ত: نَوَيْتُ اَنْ اَتَوَضَّأَ لِرَفْعِ الْحَدَثِ وَاسْتِبَاحَةً لِّلصَّلَاةِ</Text>
-        <Text style={[styles.item, { fontSize, lineHeight: fontSize * 1.6 }]}>• আরবি নিয়তের উচ্চারণ: "নাওয়াইতু আন আতায়াদদ্বাআ লিরাফইল হাদাসি ওয়া ইস্তিবাহাতাল লিসসালাহ।"</Text>
-        <Text style={[styles.quote, { fontSize, lineHeight: fontSize * 1.6 }]}>ওজু শুরু করার ঠিক আগে "বিসমিল্লাহির রহমানির রহিম" বলে ওজু শুরু করবেন।</Text>
-      </View>
-      <View style={styles.quoteCard}>
-        <Text style={[styles.label, { fontSize: fontSize + 1 }]}>💧 ওজুর ৪টি ফরজ</Text>
-        <Text style={[styles.item, { fontSize, lineHeight: fontSize * 1.6 }]}>• মুখমণ্ডল ধোয়া: কপাল থেকে থুতনি এবং দুই কানের লতি পর্যন্ত পুরো মুখ একবার ধোয়া।</Text>
-        <Text style={[styles.item, { fontSize, lineHeight: fontSize * 1.6 }]}>• হাত ধোয়া: দুই হাতের কনুইসহ একবার ধোয়া।</Text>
-        <Text style={[styles.item, { fontSize, lineHeight: fontSize * 1.6 }]}>• মাথা মাসেহ করা: মাথার চার ভাগের এক ভাগ ভেজা হাত দিয়ে মাসেহ করা।</Text>
-        <Text style={[styles.item, { fontSize, lineHeight: fontSize * 1.6 }]}>• পা ধোয়া: দুই পায়ের টাখনু বা গিরাসহ একবার ধোয়া।</Text>
-      </View>
-    </Section>    <View style={styles.note}><Text style={[styles.noteText, { fontSize, lineHeight: fontSize * 1.55 }]}>নোট: ৩ বা ৪ রাকাত নামাজে ২য় রাকাতে কেবল তাশাহহুদ পড়ে ৩য় রাকাতের জন্য দাঁড়াতে হয় এবং শেষ রাকাতে পূর্ণাঙ্গ বৈঠক করে সালাম ফেরাতে হয়।</Text></View>
-  </ScrollView><BottomNav activeTab="home" /></ImageBackground>;
+export default function namaz_shiksha() {
+  const router = useRouter(); 
+  const [items, setItems] = useState<ShikshaItem[]>([]); 
+  const [loading, setLoading] = useState(true); 
+  const [fontSize, setFontSize] = useState(15);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  useEffect(() => { 
+    let isMounted = true;
+    (async () => { 
+      try { 
+        // ক্যাশ ফ্রেশ করার জন্য নাম পরিবর্তন করে _v2 দেওয়া হয়েছে
+        const cached = await AsyncStorage.getItem('@namaz_shikshaList_v2'); 
+        if (cached && isMounted) { 
+            setItems(JSON.parse(cached)); 
+            setLoading(false); 
+        } 
+        
+        console.log("ফায়ারবেস থেকে ডাটা খোঁজা হচ্ছে...");
+        
+        // কালেকশনের নাম 'namaz_shiksha' (s ছোটহাতের, S বড়হাতের)
+        const snap = await getDocs(collection(db, 'namaz_shiksha')); 
+        console.log("মোট ডাটা পাওয়া গেছে:", snap.docs.length, "টি");
+
+        const list = snap.docs.map(d => ({ id: d.id, ...d.data() })) as ShikshaItem[]; 
+        list.sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
+        
+        if (isMounted) {
+          setItems(list); 
+          await AsyncStorage.setItem('@namaz_shikshaList_v2', JSON.stringify(list)); 
+          setLoading(false);
+        }
+      } catch (e) { 
+        console.error('ফায়ারবেস এরর:', e); 
+        if (isMounted) setLoading(false);
+      } 
+    })(); 
+    return () => { isMounted = false; };
+  }, []);
+
+  const toggleExpand = (id: string) => {
+    setExpandedId(prevId => (prevId === id ? null : id));
+  };
+
+  return (
+    <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.background}>
+      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+        
+        <View style={styles.topRow}>
+          <TouchableOpacity style={styles.back} onPress={() => router.back()}>
+            <Text style={styles.backText}>← ফিরে যান</Text>
+          </TouchableOpacity>
+          <FontSizeControl size={fontSize} onChange={setFontSize} />
+        </View>
+
+        <View style={styles.header}>
+          <Text style={styles.heading}>নামায শিক্ষা</Text>
+          <Text style={styles.subtitle}>নামাযের প্রয়োজনীয় নিয়ম ও দোয়া</Text>
+        </View>
+
+        {loading ? (
+          <ActivityIndicator color="#0f562a" size="large" style={{marginTop: 40}} />
+        ) : items.length === 0 ? (
+          <Text style={styles.empty}>কোনো তথ্য পাওয়া যায়নি।</Text>
+        ) : (
+          items.map(item => (
+            <View key={item.id} style={styles.noticeWrapper}>
+              <TouchableOpacity 
+                activeOpacity={0.8}
+                style={styles.noticeTitleBar}
+                onPress={() => toggleExpand(item.id)}
+              >
+                <View style={styles.titleLeft}>
+                  {item.imageUrl ? (
+                    <Image source={{ uri: item.imageUrl }} style={styles.roundImage} />
+                  ) : null}
+                  <Text style={[styles.noticeTitle, { fontSize: fontSize + 2 }]}>
+                    {item.title || 'বিষয়'}
+                  </Text>
+                </View>
+                <Text style={styles.plusIcon}>
+                  {expandedId === item.id ? '-' : '+'}
+                </Text>
+              </TouchableOpacity>
+              
+              {expandedId === item.id && item.description ? (
+                <View style={styles.detailsBox}>
+                  <Text style={[styles.noticeDescription, { fontSize, lineHeight: fontSize * 1.6 }]}>
+                    {item.description}
+                  </Text>
+                </View>
+              ) : null}
+            </View>
+          ))
+        )}
+      </ScrollView>
+      <BottomNav activeTab="home" />
+    </ImageBackground>
+  );
 }
-function Section({title,index,open,toggle,children}:{title:string;index:number;open:number|null;toggle:(i:number)=>void;children:React.ReactNode}) { return <View style={styles.section}><TouchableOpacity activeOpacity={.85} onPress={()=>toggle(index)}><View style={styles.sectionTitleRow}><Text style={styles.sectionTitle}>{title}</Text><Text style={styles.chevron}>{open===index?'−':'+'}</Text></View></TouchableOpacity>{open===index&&<View style={styles.content}>{children}</View>}</View> }
-const styles=StyleSheet.create({background:{flex:1},container:{padding:16,paddingBottom:100},backButton: { marginTop: 0, alignSelf:'flex-start',backgroundColor:'#0f562a',paddingHorizontal: 12,paddingVertical: 7,borderRadius: 18},backText:{color:'#fff',fontWeight:'700'},header:{marginTop:14,marginBottom:18,backgroundColor:'#0f562a',borderRadius:18,padding:18,alignItems:'center',borderWidth:1,borderColor:'#f9bf3a'},heading:{color:'#f9bf3a',fontSize:28,fontWeight:'800',textAlign:'center'},subtitle:{color:'#eaf7ee',marginTop:5,fontSize:13},section:{marginBottom:14},sectionTitleRow:{flexDirection:'row',alignItems:'center',backgroundColor:'#0f562a',borderRadius:12,paddingHorizontal:14,paddingVertical:12},sectionTitle:{color:'#fff',flex:1,fontSize:17,fontWeight:'800',lineHeight:24},chevron:{color:'#f9bf3a',fontSize:27,fontWeight:'700',marginLeft:8},content:{backgroundColor:'rgba(255,255,255,.96)',padding:12,borderBottomLeftRadius:14,borderBottomRightRadius:14},item:{color:'#303030',fontSize:15,lineHeight:25,marginBottom:5},table:{flexDirection:'row',flexWrap:'wrap',borderWidth:1,borderColor:'#0f562a'},cell:{width:'16.666%',minHeight:42,textAlign:'center',textAlignVertical:'center',padding:4,borderRightWidth:1,borderBottomWidth:1,borderColor:'#b7c8b8',fontSize:12,color:'#303030'},headCell:{backgroundColor:'#0f562a',color:'#fff',fontWeight:'800'},quoteCard:{marginBottom:9,borderLeftWidth:5,borderLeftColor:'#f9bf3a',padding:10,backgroundColor:'#fffdf7',borderRadius:9},label:{color:'#0f562a',fontSize:15,fontWeight:'800',marginBottom:4},quote:{color:'#303030',fontSize:15,lineHeight:24},note:{backgroundColor:'#fff8df',borderRadius:12,padding:14,borderWidth:1,borderColor:'#f9bf3a',marginTop:4},noteText:{color:'#513d00',fontSize:14,lineHeight:23,fontWeight:'600'} });
+
+const styles = StyleSheet.create({ 
+  background: { flex: 1 }, 
+  container: { padding: 16, paddingBottom: 110 }, 
+  topRow: { minHeight: 38, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }, 
+  back: { backgroundColor: '#0f562a', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, borderWidth: 1, borderColor: '#f9bf3a' }, 
+  backText: { color: '#fff', fontWeight: '700', fontSize: 13 }, 
+  header: { backgroundColor: '#0f562a', borderRadius: 18, padding: 18, alignItems: 'center', borderWidth: 1, borderColor: '#f9bf3a', marginBottom: 16 }, 
+  heading: { color: '#f9bf3a', fontSize: 26, fontWeight: '800' }, 
+  subtitle: { color: '#eaf7ee', fontSize: 13, marginTop: 5 }, 
+  
+  noticeWrapper: { marginBottom: 14, borderRadius: 16, overflow: 'hidden' },
+  noticeTitleBar: { 
+    minHeight: 66, backgroundColor: '#0f562a', borderRadius: 16, 
+    paddingVertical: 10, paddingHorizontal: 14, flexDirection: 'row', 
+    alignItems: 'center', justifyContent: 'space-between', 
+    borderWidth: 1, borderColor: '#f9bf3a' 
+  },
+  titleLeft: { flex: 1, flexDirection: 'row', alignItems: 'center' },
+  roundImage: { width: 45, height: 45, borderRadius: 23, marginRight: 12, borderWidth: 2, borderColor: '#f9bf3a' },
+  noticeTitle: { flex: 1, color: '#ffffff', fontWeight: '800' },
+  plusIcon: { color: '#f9bf3a', fontSize: 28, fontWeight: '700', marginLeft: 10, width: 28, textAlign: 'center' },
+  
+  detailsBox: { 
+    backgroundColor: 'rgba(255,255,255,0.96)', padding: 15, 
+    borderBottomLeftRadius: 16, borderBottomRightRadius: 16, 
+    borderLeftWidth: 3, borderRightWidth: 3, borderBottomWidth: 3, 
+    borderColor: '#0f562a', marginTop: -5 
+  },
+  noticeDescription: { color: '#333333', textAlign: 'justify' },
+  empty: { color: '#0f562a', textAlign: 'center', marginTop: 30, fontSize: 16, fontWeight: 'bold' } 
+});

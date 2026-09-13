@@ -10,99 +10,53 @@ import {
   View,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { db } from '../firebase';
 import BottomNav from '../components/BottomNav';
 import FontSizeControl from '../components/FontSizeControl';
 
-type Item = {
+type AboutItem = {
   id: string;
   title?: string;
   description?: string;
   imageUrl?: string;
 };
 
-type PageTexts = {
-  heading: string;
-  subtitle: string;
-  loadingText: string;
-  emptyText: string;
-  noTitleText: string;
-  noDescriptionText: string;
-  backButtonText: string;
-};
-
-const DEFAULT_TEXTS: PageTexts = {
-  heading: 'বিজ্ঞপ্তি ও অন্যান্য',
-  subtitle: 'দরবার শরীফের সাম্প্রতিক ঘোষণা ও খবর',
-  loadingText: 'লোড হচ্ছে...',
-  emptyText: 'কোনো বিজ্ঞপ্তি পাওয়া যায়নি।',
-  noTitleText: 'শিরোনাম নেই',
-  noDescriptionText: 'এই বিজ্ঞপ্তির কোনো বিস্তারিত তথ্য নেই।',
-  backButtonText: '← ফিরে যান',
-};
-
-const PAGE_TEXTS_CACHE_KEY = '@noticePageTexts';
-const ITEMS_CACHE_KEY = '@namazShikshaList';
-
 const backgroundImage = {
   uri: 'https://t4.ftcdn.net/jpg/04/24/19/47/360_F_424194700_YLn8PuaiqR36LI84T9E76ATDd6HrU2at.jpg',
 };
 
-export default function ItemScreen() {
+export default function AboutScreen() {
   const router = useRouter();
 
-  const [items, setItemsList] = useState<Item[]>([]);
-  const [texts, setTexts] = useState<PageTexts>(DEFAULT_TEXTS);
+  const [items, setAboutItemsList] = useState<AboutItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [fontSize, setFontSize] = useState(14);
-  const [expandedItemId, setExpandedItemId] = useState<string | null>(null);
+  const [expandedItemId, setExpandedAboutItemId] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
-    const fetchTexts = async () => {
-      try {
-        const cachedTexts = await AsyncStorage.getItem(PAGE_TEXTS_CACHE_KEY);
-        if (cachedTexts) {
-          setTexts({ ...DEFAULT_TEXTS, ...JSON.parse(cachedTexts) });
-        }
-
-        const settingsSnap = await getDoc(doc(db, 'pageSettings', 'notice'));
-        if (settingsSnap.exists()) {
-          const data = settingsSnap.data() as Partial<PageTexts>;
-          const merged = { ...DEFAULT_TEXTS, ...data };
-          setTexts(merged);
-          await AsyncStorage.setItem(
-            PAGE_TEXTS_CACHE_KEY,
-            JSON.stringify(merged)
-          );
-        }
-      } catch (error) {
-        console.log('Error loading page texts, using defaults:', error);
-      }
-    };
-
     const fetchItems = async () => {
       try {
-        const cachedItems = await AsyncStorage.getItem(ITEMS_CACHE_KEY);
+        const cachedItems = await AsyncStorage.getItem('@items');
 
         if (cachedItems) {
-          setItemsList(JSON.parse(cachedItems));
+          setAboutItemsList(JSON.parse(cachedItems));
           setLoading(false);
         }
 
-        const querySnapshot = await getDocs(collection(db, 'notices'));
-        console.log('Firestore project:', db.app.options.projectId);
-        console.log('Fetched docs count:', querySnapshot.size);
+        const querySnapshot = await getDocs(collection(db, 'about'));
 
-        const list: Item[] = querySnapshot.docs.map(docSnap => ({
-          id: docSnap.id,
-          ...(docSnap.data() as Omit<Item, 'id'>),
+        const list: AboutItem[] = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...(doc.data() as Omit<AboutItem, 'id'>),
         }));
 
-        setItemsList(list);
-        await AsyncStorage.setItem(ITEMS_CACHE_KEY, JSON.stringify(list));
+        setAboutItemsList(list);
+        await AsyncStorage.setItem('@items', JSON.stringify(list));
         setLoading(false);
       } catch (error) {
         console.log('Error or Offline:', error);
@@ -110,12 +64,11 @@ export default function ItemScreen() {
       }
     };
 
-    fetchTexts();
     fetchItems();
   }, []);
 
   const toggleItem = (id: string) => {
-    setExpandedItemId(currentId => (currentId === id ? null : id));
+    setExpandedAboutItemId(currentId => (currentId === id ? null : id));
   };
 
   return (
@@ -135,30 +88,34 @@ export default function ItemScreen() {
           onPress={() => router.back()}
           activeOpacity={0.8}
         >
-          <Text style={styles.backText}>{texts.backButtonText}</Text>
+          <Text style={styles.backText}>Ã¢â€ Â Ã Â¦Â«Ã Â¦Â¿Ã Â¦Â°Ã Â§â€¡ Ã Â¦Â¯Ã Â¦Â¾Ã Â¦Â¨</Text>
         </TouchableOpacity>
 
         <View style={styles.header}>
-          <Text style={styles.heading}>{texts.heading}</Text>
-          <Text style={styles.subtitle}>{texts.subtitle}</Text>
+          <Text style={styles.heading}>Ã Â¦Å“Ã Â¦Â°Ã Â§ÂÃ Â¦Â°Ã Â¦Â¿ Ã Â¦Â¬Ã Â¦Â¿Ã Â¦Å“Ã Â§ÂÃ Â¦Å¾Ã Â¦ÂªÃ Â§ÂÃ Â¦Â¤Ã Â¦Â¿</Text>
+          <Text style={styles.subtitle}>
+            Ã Â¦Â¦Ã Â¦Â°Ã Â¦Â¬Ã Â¦Â¾Ã Â¦Â° Ã Â¦Â¶Ã Â¦Â°Ã Â§â‚¬Ã Â¦Â«Ã Â§â€¡Ã Â¦Â° Ã Â¦Â¸Ã Â¦Â¾Ã Â¦Â®Ã Â§ÂÃ Â¦ÂªÃ Â§ÂÃ Â¦Â°Ã Â¦Â¤Ã Â¦Â¿Ã Â¦â€¢ Ã Â¦ËœÃ Â§â€¹Ã Â¦Â·Ã Â¦Â£Ã Â¦Â¾ Ã Â¦â€œ Ã Â¦â€“Ã Â¦Â¬Ã Â¦Â°
+          </Text>
         </View>
 
         {loading ? (
           <View style={styles.loadingBox}>
             <ActivityIndicator size="large" color="#f9bf3a" />
-            <Text style={styles.loadingText}>{texts.loadingText}</Text>
+            <Text style={styles.loadingText}>Ã Â¦Â²Ã Â§â€¹Ã Â¦Â¡ Ã Â¦Â¹Ã Â¦Å¡Ã Â§ÂÃ Â¦â€ºÃ Â§â€¡...</Text>
           </View>
         ) : items.length === 0 ? (
-          <Text style={styles.emptyText}>{texts.emptyText}</Text>
+          <Text style={styles.emptyText}>
+            Ã Â¦â€¢Ã Â§â€¹Ã Â¦Â¨Ã Â§â€¹ Ã Â¦Â¬Ã Â¦Â¿Ã Â¦Å“Ã Â§ÂÃ Â¦Å¾Ã Â¦ÂªÃ Â§ÂÃ Â¦Â¤Ã Â¦Â¿ Ã Â¦ÂªÃ Â¦Â¾Ã Â¦â€œÃ Â¦Â¯Ã Â¦Â¼Ã Â¦Â¾ Ã Â¦Â¯Ã Â¦Â¾Ã Â¦Â¯Ã Â¦Â¼Ã Â¦Â¨Ã Â¦Â¿Ã Â¥Â¤
+          </Text>
         ) : (
           items.map(item => {
             const isExpanded = expandedItemId === item.id;
 
             return (
-              <View key={item.id} style={styles.noticeWrapper}>
+              <View key={item.id} style={styles.itemWrapper}>
                 <TouchableOpacity
                   activeOpacity={0.8}
-                  style={styles.noticeTitleBar}
+                  style={styles.itemTitleBar}
                   onPress={() => toggleItem(item.id)}
                 >
                   <View style={styles.titleLeft}>
@@ -171,13 +128,18 @@ export default function ItemScreen() {
 
                     <Text
                       numberOfLines={2}
-                      style={[styles.noticeTitle, { fontSize: fontSize + 3 }]}
+                      style={[
+                        styles.itemTitle,
+                        { fontSize: fontSize + 3 },
+                      ]}
                     >
-                      {item.title || texts.noTitleText}
+                      {item.title || 'Ã Â¦Â¶Ã Â¦Â¿Ã Â¦Â°Ã Â§â€¹Ã Â¦Â¨Ã Â¦Â¾Ã Â¦Â® Ã Â¦Â¨Ã Â§â€¡Ã Â¦â€¡'}
                     </Text>
                   </View>
 
-                  <Text style={styles.plusIcon}>{isExpanded ? '−' : '+'}</Text>
+                  <Text style={styles.plusIcon}>
+                    {isExpanded ? 'Ã¢Ë†â€™' : '+'}
+                  </Text>
                 </TouchableOpacity>
 
                 {isExpanded && (
@@ -192,11 +154,15 @@ export default function ItemScreen() {
 
                     <Text
                       style={[
-                        styles.noticeDescription,
-                        { fontSize, lineHeight: fontSize * 1.6 },
+                        styles.itemDescription,
+                        {
+                          fontSize,
+                          lineHeight: fontSize * 1.6,
+                        },
                       ]}
                     >
-                      {item.description || texts.noDescriptionText}
+                      {item.description ||
+                        'Ã Â¦ÂÃ Â¦â€¡ Ã Â¦Â¬Ã Â¦Â¿Ã Â¦Å“Ã Â§ÂÃ Â¦Å¾Ã Â¦ÂªÃ Â§ÂÃ Â¦Â¤Ã Â¦Â¿Ã Â¦Â° Ã Â¦â€¢Ã Â§â€¹Ã Â¦Â¨Ã Â§â€¹ Ã Â¦Â¬Ã Â¦Â¿Ã Â¦Â¸Ã Â§ÂÃ Â¦Â¤Ã Â¦Â¾Ã Â¦Â°Ã Â¦Â¿Ã Â¦Â¤ Ã Â¦Â¤Ã Â¦Â¥Ã Â§ÂÃ Â¦Â¯ Ã Â¦Â¨Ã Â§â€¡Ã Â¦â€¡Ã Â¥Â¤'}
                     </Text>
                   </View>
                 )}
@@ -206,7 +172,7 @@ export default function ItemScreen() {
         )}
       </ScrollView>
 
-      <BottomNav activeTab="home" />
+      <BottomNav activeTab="about" />
     </ImageBackground>
   );
 }
@@ -280,13 +246,13 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
-  noticeWrapper: {
+  itemWrapper: {
     marginBottom: 14,
     borderRadius: 16,
     overflow: 'hidden',
   },
 
-  noticeTitleBar: {
+  itemTitleBar: {
     minHeight: 66,
     backgroundColor: '#0f562a',
     borderRadius: 16,
@@ -314,7 +280,7 @@ const styles = StyleSheet.create({
     borderColor: '#f9bf3a',
   },
 
-  noticeTitle: {
+  itemTitle: {
     flex: 1,
     color: '#ffffff',
     fontWeight: '800',
@@ -347,7 +313,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
 
-  noticeDescription: {
+  itemDescription: {
     color: '#333333',
     textAlign: 'justify',
   },
